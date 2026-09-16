@@ -1,0 +1,93 @@
+:root {
+  --bg: #121214;
+  --bg-elevated: #1a1a1d;
+  --ink: #f4f2ef;
+  --ink-soft: rgba(244, 242, 239, 0.72);
+  --muted: rgba(244, 242, 239, 0.48);
+  --line: rgba(255, 255, 255, 0.1);
+  --line-strong: rgba(255, 255, 255, 0.18);
+  --card: #f6f4f1;
+  --card-ink: #1a1a1d;
+  --card-soft: #5c5a57;
+  --card-muted: #8a8680;
+  --card-line: #e4e0da;
+  --card-surface: #ebe8e3;
+  --accent-warm: #ff8f6b;
+  --radius: 28px;
+  --radius-sm: 18px;
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+  --font-display: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+  --font-body: "Plus Jakarta Sans", "Avenir Next", "Segoe UI", sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes soft-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes wash {
+  0% {
+    background-position: 0% 40%;
+  }
+  50% {
+    background-position: 100% 60%;
+  }
+  100% {
+    background-position: 0% 40%;
+  }
+}
