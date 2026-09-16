@@ -4,10 +4,89 @@ import {
   STATUS_OPTIONS,
   CATEGORY_FILTERS,
   FIT_FILTERS,
+  isApplicationOpen,
+  hasApplicationClosed,
+  todayISO,
 } from "./data/programs";
 import ProgramCard from "./components/ProgramCard";
 import { useApplications } from "./hooks/useApplications";
 import "./App.css";
+
+const FIT_ORDER = { "Strong fit": 0, "Good fit": 1, Explore: 2 };
+
+function sortPrograms(list, sortBy, applications) {
+  const statusOrder = Object.fromEntries(STATUS_OPTIONS.map((s, i) => [s.value, i]));
+  const copy = [...list];
+
+  if (sortBy === "opens") {
+    return copy.sort(
+      (a, b) =>
+        (a.opensOn || "9999").localeCompare(b.opensOn || "9999") ||
+        a.name.localeCompare(b.name)
+    );
+  }
+  if (sortBy === "deadline") {
+    return copy.sort(
+      (a, b) =>
+        (a.closesOn || "9999").localeCompare(b.closesOn || "9999") ||
+        a.name.localeCompare(b.name)
+    );
+  }
+  if (sortBy === "name") {
+    return copy.sort((a, b) => a.name.localeCompare(b.name));
+  }
+  if (sortBy === "status") {
+    return copy.sort((a, b) => {
+      const sa = applications[a.id]?.status || "not_started";
+      const sb = applications[b.id]?.status || "not_started";
+      return (statusOrder[sa] ?? 0) - (statusOrder[sb] ?? 0);
+    });
+  }
+  return copy.sort((a, b) => {
+    const fa = FIT_ORDER[a.fit] ?? 9;
+    const fb = FIT_ORDER[b.fit] ?? 9;
+    if (fa !== fb) return fa - fb;
+    return (a.opensOn || "").localeCompare(b.opensOn || "") || a.name.localeCompare(b.name);
+  });
+}
+
+function ProgramSection({ title, subtitle, programs, applications, updateApp, toggleChecklist, expandAll }) {
+  if (programs.length === 0) {
+    return (
+      <section className="program-section">
+        <div className="section-head">
+          <h2>{title}</h2>
+          <p>{subtitle}</p>
+        </div>
+        <p className="empty section-empty">None right now — check back as portals open.</p>
+      </section>
+    );
+  }
+
+  return (
+    <section className="program-section">
+      <div className="section-head">
+        <h2>
+          {title}
+          <span className="section-count">{programs.length}</span>
+        </h2>
+        <p>{subtitle}</p>
+      </div>
+      <div className="list">
+        {programs.map((program) => (
+          <ProgramCard
+            key={program.id}
+            program={program}
+            appData={applications[program.id] || {}}
+            onUpdate={(updates) => updateApp(program.id, updates)}
+            onToggleChecklist={(key) => toggleChecklist(program.id, key)}
+            forceOpen={expandAll}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
 
 export default function App() {
   const {
@@ -22,10 +101,11 @@ export default function App() {
   const [category, setCategory] = useState("All");
   const [fit, setFit] = useState("All");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [sortBy, setSortBy] = useState("fit");
+  const [sortBy, setSortBy] = useState("opens");
   const [query, setQuery] = useState("");
   const [expandAll, setExpandAll] = useState(false);
   const fileRef = useRef(null);
+  const today = todayISO();
 
   const stats = useMemo(() => {
     const values = Object.values(applications);
@@ -39,7 +119,7 @@ export default function App() {
   }, [applications]);
 
   const filtered = useMemo(() => {
-    let list = PROGRAMS.filter((p) => {
+    return PROGRAMS.filter((p) => {
       if (category !== "All" && p.category !== category) return false;
       if (fit !== "All" && p.fit !== fit) return false;
       const app = applications[p.id] || {};
@@ -52,34 +132,29 @@ export default function App() {
       }
       return true;
     });
+  }, [category, fit, statusFilter, query, applications]);
 
-    const fitOrder = { "Strong fit": 0, "Good fit": 1, Explore: 2 };
-    const statusOrder = Object.fromEntries(STATUS_OPTIONS.map((s, i) => [s.value, i]));
-
-    if (sortBy === "deadline") {
-      list = [...list].sort((a, b) => a.deadline.localeCompare(b.deadline));
-    } else if (sortBy === "name") {
-      list = [...list].sort((a, b) => a.name.localeCompare(b.name));
-    } else if (sortBy === "status") {
-      list = [...list].sort((a, b) => {
-        const sa = applications[a.id]?.status || "not_started";
-        const sb = applications[b.id]?.status || "not_started";
-        return (statusOrder[sa] ?? 0) - (statusOrder[sb] ?? 0);
-      });
-    } else {
-      list = [...list].sort((a, b) => {
-        const fa = fitOrder[a.fit] ?? 9;
-        const fb = fitOrder[b.fit] ?? 9;
-        if (fa !== fb) return fa - fb;
-        return a.name.localeCompare(b.name);
-      });
+  const { openNow, notYetOpen, closed } = useMemo(() => {
+    const open = [];
+    const upcoming = [];
+    const done = [];
+    for (const p of filtered) {
+      if (isApplicationOpen(p, today)) open.push(p);
+      else if (hasApplicationClosed(p, today)) done.push(p);
+      else upcoming.push(p);
     }
-
-    return list;
-  }, [category, fit, statusFilter, sortBy, query, applications]);
+    return {
+      openNow: sortPrograms(open, sortBy, applications),
+      notYetOpen: sortPrograms(upcoming, sortBy === "fit" ? "opens" : sortBy, applications),
+      closed: sortPrograms(done, sortBy, applications),
+    };
+  }, [filtered, sortBy, applications, today]);
 
   const addedCount = PROGRAMS.filter((p) => p.source === "added").length;
   const listCount = PROGRAMS.filter((p) => p.source === "list").length;
+  const nextOpens = [...PROGRAMS]
+    .filter((p) => p.opensOn && p.opensOn > today)
+    .sort((a, b) => a.opensOn.localeCompare(b.opensOn))[0];
 
   if (loading) {
     return (
@@ -121,9 +196,15 @@ export default function App() {
           <p className="brand">Research Tracker</p>
           <h1>Summer research applications for Eddy · UCLA MCDB</h1>
           <p className="lede">
-            A soft workspace for biomedical & clinical programs — status, materials, and
-            deadlines in one place. {addedCount} opportunities added for your cardiology +
-            clinical profile. Built for <strong>Summer 2027</strong>.
+            Split by what’s open now vs what’s coming. {openNow.length} open ·{" "}
+            {notYetOpen.length} not yet open
+            {nextOpens ? (
+              <>
+                {" "}
+                · Next up: <strong>{nextOpens.name}</strong> ({nextOpens.opensLabel})
+              </>
+            ) : null}
+            . Built for <strong>Summer 2027</strong>.
           </p>
         </div>
       </header>
@@ -140,9 +221,7 @@ export default function App() {
             key={s.key}
             type="button"
             className={`stat ${statusFilter === s.key ? "active" : ""}`}
-            onClick={() =>
-              setStatusFilter((cur) => (cur === s.key ? "all" : s.key))
-            }
+            onClick={() => setStatusFilter((cur) => (cur === s.key ? "all" : s.key))}
           >
             <span className="stat-label">{s.label}</span>
             <span className="stat-value">{s.value}</span>
@@ -194,8 +273,9 @@ export default function App() {
             <label className="sort-label">
               Sort
               <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                <option value="opens">Open date</option>
+                <option value="deadline">Deadline</option>
                 <option value="fit">Best fit</option>
-                <option value="deadline">Deadline text</option>
                 <option value="status">Status</option>
                 <option value="name">Name</option>
               </select>
@@ -207,7 +287,7 @@ export default function App() {
       <div className="toolbar">
         <p className="result-count">
           Showing <strong>{filtered.length}</strong> of {PROGRAMS.length} (
-          {listCount} from your list · {addedCount} added)
+          {listCount} from your list · {addedCount} added) · as of {today}
         </p>
         <div className="toolbar-actions">
           <button type="button" className="ghost danger" onClick={resetAll}>
@@ -227,26 +307,47 @@ export default function App() {
         </div>
       </div>
 
-      <div className="list">
-        {filtered.map((program) => (
-          <ProgramCard
-            key={program.id}
-            program={program}
-            appData={applications[program.id] || {}}
-            onUpdate={(updates) => updateApp(program.id, updates)}
-            onToggleChecklist={(key) => toggleChecklist(program.id, key)}
-            forceOpen={expandAll}
-          />
-        ))}
-        {filtered.length === 0 && (
-          <p className="empty">No programs match these filters.</p>
-        )}
-      </div>
+      <ProgramSection
+        title="Open now"
+        subtitle="Applications are currently accepting submissions."
+        programs={openNow}
+        applications={applications}
+        updateApp={updateApp}
+        toggleChecklist={toggleChecklist}
+        expandAll={expandAll}
+      />
+
+      <ProgramSection
+        title="Not yet open"
+        subtitle="Portals open on the dates below — prep materials early."
+        programs={notYetOpen}
+        applications={applications}
+        updateApp={updateApp}
+        toggleChecklist={toggleChecklist}
+        expandAll={expandAll}
+      />
+
+      {closed.length > 0 && (
+        <ProgramSection
+          title="Closed"
+          subtitle="Application window has ended for this cycle."
+          programs={closed}
+          applications={applications}
+          updateApp={updateApp}
+          toggleChecklist={toggleChecklist}
+          expandAll={expandAll}
+        />
+      )}
+
+      {filtered.length === 0 && (
+        <p className="empty">No programs match these filters.</p>
+      )}
 
       <footer className="footer">
         <p>
-          Progress saves in this browser. Always confirm deadlines and eligibility on the official
-          program page before applying.
+          Open dates scraped from official program pages (Sep 2026). Some are estimated from the
+          prior cycle — always confirm on the program site before applying. Progress saves in this
+          browser.
         </p>
       </footer>
     </div>

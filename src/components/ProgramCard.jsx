@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { STATUS_OPTIONS, CHECKLIST_KEYS } from "../data/programs";
+import {
+  STATUS_OPTIONS,
+  CHECKLIST_KEYS,
+  isApplicationOpen,
+  hasApplicationClosed,
+  todayISO,
+} from "../data/programs";
 
 function StatusBadge({ value }) {
   const s = STATUS_OPTIONS.find((o) => o.value === value) || STATUS_OPTIONS[0];
@@ -14,6 +20,17 @@ function FitChip({ fit }) {
   const cls =
     fit === "Strong fit" ? "fit-strong" : fit === "Good fit" ? "fit-good" : "fit-explore";
   return <span className={`chip ${cls}`}>{fit}</span>;
+}
+
+function OpenBadge({ program }) {
+  const today = todayISO();
+  if (isApplicationOpen(program, today)) {
+    return <span className="chip chip-open">Open now</span>;
+  }
+  if (hasApplicationClosed(program, today)) {
+    return <span className="chip chip-closed">Closed</span>;
+  }
+  return <span className="chip chip-soon">Opens {program.opensLabel}</span>;
 }
 
 export default function ProgramCard({
@@ -42,6 +59,7 @@ export default function ProgramCard({
         <div className="card-main">
           <div className="card-title-row">
             <h2>{program.name}</h2>
+            <OpenBadge program={program} />
             <FitChip fit={program.fit} />
             {program.source === "added" && (
               <span className="chip chip-added">Added for you</span>
@@ -55,7 +73,9 @@ export default function ProgramCard({
           </div>
           <p className="card-summary">{program.summary}</p>
           <p className="card-deadline">
-            <strong>Deadline:</strong> {program.deadline}
+            <strong>Opens:</strong> {program.opensLabel}
+            <span className="dot"> · </span>
+            <strong>Deadline:</strong> {program.closesLabel}
           </p>
         </div>
         <div className="card-side">
@@ -85,6 +105,12 @@ export default function ProgramCard({
           <div className="info-block">
             <h3>Requirements</h3>
             <p>{program.requirements}</p>
+            {program.dateNote && (
+              <>
+                <h3>Date note</h3>
+                <p>{program.dateNote}</p>
+              </>
+            )}
           </div>
 
           <div className="checklist">

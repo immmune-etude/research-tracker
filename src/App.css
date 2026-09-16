@@ -347,6 +347,70 @@
   animation: rise 0.55s ease 0.24s both;
 }
 
+.program-section {
+  margin-bottom: 1.75rem;
+  animation: rise 0.55s ease 0.22s both;
+}
+
+.section-head {
+  margin-bottom: 0.85rem;
+}
+
+.section-head h2 {
+  margin: 0 0 0.25rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  font-family: var(--font-display);
+  font-size: 1.65rem;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.section-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  padding: 0 0.45rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--line);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.section-head p {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+
+.section-empty {
+  margin-top: 0;
+}
+
+.chip-open {
+  background: #d9f0e4;
+  color: #2d6b52;
+}
+
+.chip-soon {
+  background: #ebe4f5;
+  color: #5b4a85;
+}
+
+.chip-closed {
+  background: #f0e4e2;
+  color: #8a4a44;
+}
+
 .empty {
   padding: 2rem;
   text-align: center;

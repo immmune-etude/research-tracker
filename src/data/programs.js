@@ -19,6 +19,27 @@ export const CATEGORY_FILTERS = [
 
 export const FIT_FILTERS = ["All", "Strong fit", "Good fit", "Explore"];
 
+
+/** Compare dates as YYYY-MM-DD against local today. */
+export function todayISO() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+export function isApplicationOpen(program, today = todayISO()) {
+  if (!program.opensOn) return false;
+  if (today < program.opensOn) return false;
+  if (program.closesOn && today > program.closesOn) return false;
+  return true;
+}
+
+export function hasApplicationClosed(program, today = todayISO()) {
+  return Boolean(program.closesOn && today > program.closesOn);
+}
+
 export const CHECKLIST_KEYS = [
   { key: "transcript", label: "Transcript" },
   { key: "essay", label: "Essay / statements" },
@@ -41,7 +62,12 @@ export const PROGRAMS = [
     location: "Bethesda, MD & other NIH campuses",
     duration: "~8–12 weeks (summer)",
     benefits: "Paid stipend; parking/transit support; poster day",
-    deadline: "Typically mid-Feb (2027 cycle opens mid-Nov 2026)",
+    deadline: "Mid-Nov 2026 → Mid-Feb 2027",
+    opensOn: "2026-11-15",
+    closesOn: "2027-02-15",
+    opensLabel: "Mid-Nov 2026",
+    closesLabel: "Mid-Feb 2027",
+    dateNote: "NIH: opens mid-Nov, closes mid-Feb",
     summary:
       "Paid biomedical research across NIH labs. Strong national signal for premeds and MD/PhD-leaning applicants.",
     whyFit:
@@ -60,7 +86,12 @@ export const PROGRAMS = [
     location: "Various US universities",
     duration: "Usually 8–10 weeks",
     benefits: "Stipend; often housing and travel",
-    deadline: "Varies by site (many Dec–Feb)",
+    deadline: "Typically Nov 2026 (varies by site) → Often Jan–Mar 2027",
+    opensOn: "2026-11-01",
+    closesOn: "2027-03-15",
+    opensLabel: "Typically Nov 2026 (varies by site)",
+    closesLabel: "Often Jan–Mar 2027",
+    dateNote: "Browse NSF directory anytime; each REU site sets its own window",
     summary:
       "Funded undergraduate research sites in biology, biomedical engineering, computational biology, and more. Apply to individual sites.",
     whyFit:
@@ -79,7 +110,12 @@ export const PROGRAMS = [
     location: "UCLA (or other Amgen host campuses)",
     duration: "10 weeks",
     benefits: "Stipend; housing/meals (campus-dependent); symposium",
-    deadline: "UCLA typically ~Feb 1; check each host",
+    deadline: "Nov 1, 2026 → Typically ~Feb 1, 2027",
+    opensOn: "2026-11-01",
+    closesOn: "2027-02-01",
+    opensLabel: "Nov 1, 2026",
+    closesLabel: "Typically ~Feb 1, 2027",
+    dateNote: "Amgen US cycle opens Nov 1; UCLA host deadline historically Feb 1",
     summary:
       "Competitive summer biomedical research at top universities. Explicitly strong for research-heavy medicine / MD-PhD pathways.",
     whyFit:
@@ -98,7 +134,12 @@ export const PROGRAMS = [
     location: "Rochester, MN / Arizona / Florida (campus varies)",
     duration: "10 weeks (May–July 2027 window)",
     benefits: "$6,000 stipend; housing available",
-    deadline: "Nov 1, 2026 – Feb 3, 2027",
+    deadline: "Nov 1, 2026 → Feb 3, 2027",
+    opensOn: "2026-11-01",
+    closesOn: "2027-02-03",
+    opensLabel: "Nov 1, 2026",
+    closesLabel: "Feb 3, 2027",
+    dateNote: null,
     summary:
       "Immersive biomedical research fellowship with faculty mentoring and poster session. Strong clinical-research institution brand.",
     whyFit:
@@ -118,7 +159,12 @@ export const PROGRAMS = [
     location: "Jacksonville, FL",
     duration: "10 weeks",
     benefits: "Paid (~$3,000 stipend historically)",
-    deadline: "Typically Nov 1 – Jan 31",
+    deadline: "Nov 1, 2026 → Jan 31, 2027",
+    opensOn: "2026-11-01",
+    closesOn: "2027-01-31",
+    opensLabel: "Nov 1, 2026",
+    closesLabel: "Jan 31, 2027",
+    dateNote: "Official: opens Nov 1, closes Jan 31",
     summary:
       "Clinical research internship with a faculty mentor — designed for students exploring medicine and health careers.",
     whyFit:
@@ -138,7 +184,12 @@ export const PROGRAMS = [
     location: "Baltimore, MD",
     duration: "~10 weeks",
     benefits: "Stipend (varies by SIP division); research immersion",
-    deadline: "Typically ~Feb 1 (2027 portal opens Fall 2026)",
+    deadline: "Fall 2026 (est. Oct) → Typically ~Feb 1, 2027",
+    opensOn: "2026-10-01",
+    closesOn: "2027-02-01",
+    opensLabel: "Fall 2026 (est. Oct)",
+    closesLabel: "Typically ~Feb 1, 2027",
+    dateNote: "Portal expected Fall 2026; deadline historically Feb 1",
     summary:
       "Biomedical and public health research across multiple SIP divisions (BSI-SIP and others). Free to apply.",
     whyFit:
@@ -157,7 +208,12 @@ export const PROGRAMS = [
     location: "Cambridge, MA",
     duration: "9 weeks",
     benefits: "Paid research; genomics/biomedical labs; presentations",
-    deadline: "Typically early–mid January",
+    deadline: "Oct 2026 → Typically mid-Jan 2027",
+    opensOn: "2026-10-01",
+    closesOn: "2027-01-15",
+    opensLabel: "Oct 2026",
+    closesLabel: "Typically mid-Jan 2027",
+    dateNote: "Broad: check back Oct 2026; prior deadline was mid-Jan",
     summary:
       "Intensive computational or experimental research in genomics, cancer, infectious disease, and related areas.",
     whyFit:
@@ -176,7 +232,12 @@ export const PROGRAMS = [
     location: "Philadelphia, PA",
     duration: "10 weeks",
     benefits: "Stipend; seminars; SUIP symposium",
-    deadline: "Opens Oct 1, 2026; due Feb 1, 2027",
+    deadline: "Oct 1, 2026 → Feb 1, 2027",
+    opensOn: "2026-10-01",
+    closesOn: "2027-02-01",
+    opensLabel: "Oct 1, 2026",
+    closesLabel: "Feb 1, 2027",
+    dateNote: null,
     summary:
       "Prestigious biomedical summer internship emphasizing research readiness for PhD / discovery careers. Cancer and broad biomed options.",
     whyFit:
@@ -195,7 +256,12 @@ export const PROGRAMS = [
     location: "Houston, TX",
     duration: "~10 weeks",
     benefits: "Stipend/support varies by track (e.g. UPWARDS)",
-    deadline: "Typically mid-Nov – mid-Jan",
+    deadline: "Mid-Nov 2026 → Typically mid-Jan 2027",
+    opensOn: "2026-11-17",
+    closesOn: "2027-01-14",
+    opensLabel: "Mid-Nov 2026",
+    closesLabel: "Typically mid-Jan 2027",
+    dateNote: "2026 cycle was Nov 17–Jan 14; similar timeline expected",
     summary:
       "Multiple undergraduate cancer research tracks via CATALYST. Strong immersion at a major cancer center.",
     whyFit:
@@ -215,7 +281,12 @@ export const PROGRAMS = [
     location: "Memphis, TN",
     duration: "≥10–11 weeks",
     benefits: "$600/week; housing for non-local participants",
-    deadline: "Opens Nov 1, 2026; due Feb 1, 2027",
+    deadline: "Nov 1, 2026 → Feb 1, 2027",
+    opensOn: "2026-11-01",
+    closesOn: "2027-02-01",
+    opensLabel: "Nov 1, 2026",
+    closesLabel: "Feb 1, 2027",
+    dateNote: null,
     summary:
       "Lab or clinical oncology research internship with lectures and mentor matching — excellent for pediatric oncology interest.",
     whyFit:
@@ -234,7 +305,12 @@ export const PROGRAMS = [
     location: "New York, NY",
     duration: "10 weeks",
     benefits: "Paid research experience (confirm current cycle)",
-    deadline: "Portal typically opens early November",
+    deadline: "Early Nov 2026 → Typically early Feb 2027",
+    opensOn: "2026-11-03",
+    closesOn: "2027-02-02",
+    opensLabel: "Early Nov 2026",
+    closesLabel: "Typically early Feb 2027",
+    dateNote: "Prior cycle opened early Nov; confirm 2027 portal",
     summary:
       "Immunology / cancer immuno-oncology research for rising juniors and seniors with prior research.",
     whyFit:
@@ -254,7 +330,12 @@ export const PROGRAMS = [
     location: "UCLA",
     duration: "10 weeks (June–August)",
     benefits: "Stipend up to ~$6,000 full-time / ~$2,000 part-time",
-    deadline: "Typically Jan–early March",
+    deadline: "Typically mid-Jan 2027 → Typically early Mar 2027",
+    opensOn: "2027-01-12",
+    closesOn: "2027-03-02",
+    opensLabel: "Typically mid-Jan 2027",
+    closesLabel: "Typically early Mar 2027",
+    dateNote: "2026 window was Jan 12–Mar 2; expect similar",
     summary:
       "Funded summer research with your UCLA faculty mentor plus workshops/seminars. UCLA students only.",
     whyFit:
@@ -274,7 +355,12 @@ export const PROGRAMS = [
     location: "Los Angeles (CDU / UCLA labs)",
     duration: "10 weeks",
     benefits: "Cancer research internship (confirm stipend on portal)",
-    deadline: "Check Summer 2027 portal (2026 cycle listed Jun 15–Aug 21)",
+    deadline: "Winter 2026–27 (est.) → TBD — check portal",
+    opensOn: "2026-12-01",
+    closesOn: "2027-03-01",
+    opensLabel: "Winter 2026–27 (est.)",
+    closesLabel: "TBD — check portal",
+    dateNote: "2027 dates not posted; estimate based on prior winter application pattern",
     summary:
       "Local cancer research pairing with CDU or UCLA faculty — stay in LA while gaining cancer-center exposure.",
     whyFit:
@@ -294,7 +380,12 @@ export const PROGRAMS = [
     location: "Participating universities nationwide",
     duration: "8–10 weeks",
     benefits: "Stipend; mentoring; often Scientific Sessions exposure",
-    deadline: "Host-specific (often Jan–Mar)",
+    deadline: "Typically Jan–Feb 2027 (by host) → Host-specific (often Mar)",
+    opensOn: "2027-01-01",
+    closesOn: "2027-03-31",
+    opensLabel: "Typically Jan–Feb 2027 (by host)",
+    closesLabel: "Host-specific (often Mar)",
+    dateNote: "Apply via individual AHA host institutions",
     summary:
       "Mentored cardiovascular research at AHA partner sites. Apply through individual host institutions.",
     whyFit:
@@ -313,7 +404,12 @@ export const PROGRAMS = [
     location: "National (research + community health focus)",
     duration: "16 weeks (academic-year style program)",
     benefits: "Mentorship, research/community engagement, national network",
-    deadline: "Typically mid-June – mid-July (next window ~Jun 15–Jul 17, 2026 for following cycle — verify)",
+    deadline: "Typically mid-Jun 2027 → Typically mid-Jul 2027",
+    opensOn: "2027-06-15",
+    closesOn: "2027-07-17",
+    opensLabel: "Typically mid-Jun 2027",
+    closesLabel: "Typically mid-Jul 2027",
+    dateNote: "2026 window was Jun 15–Jul 17; next cycle expected similar",
     summary:
       "National AHA program for undergrads in science advancing careers in science, medicine, and research.",
     whyFit:
@@ -332,7 +428,12 @@ export const PROGRAMS = [
     location: "Stanford, CA",
     duration: "~8–9 weeks",
     benefits: "Stipend; housing typically included",
-    deadline: "Typically early February",
+    deadline: "Nov 1, 2026 (expected) → Typically Feb 1, 2027",
+    opensOn: "2026-11-01",
+    closesOn: "2027-02-01",
+    opensLabel: "Nov 1, 2026 (expected)",
+    closesLabel: "Typically Feb 1, 2027",
+    dateNote: "Prior cycle opened Nov 1; confirm when 2027 page updates",
     summary:
       "Highly selective West Coast biomedical summer research. Stanford hosts Amgen Scholars and related bioscience summer programs.",
     whyFit:
@@ -351,7 +452,12 @@ export const PROGRAMS = [
     location: "Pasadena, CA (near UCLA)",
     duration: "10 weeks",
     benefits: "Competitive stipend; housing support historically",
-    deadline: "Typically early January",
+    deadline: "Nov 1, 2026 (expected) → Typically Jan 9, 2027",
+    opensOn: "2026-11-01",
+    closesOn: "2027-01-09",
+    opensLabel: "Nov 1, 2026 (expected)",
+    closesLabel: "Typically Jan 9, 2027",
+    dateNote: "Prior cycle opened Nov 1 and closed Jan 9; confirm on Caltech SFP",
     summary:
       "Summer research fellowships across Caltech labs, including biology and bioengineering-adjacent groups.",
     whyFit:
@@ -370,7 +476,12 @@ export const PROGRAMS = [
     location: "La Jolla, CA",
     duration: "~10 weeks",
     benefits: "Stipend; biomedical research immersion",
-    deadline: "Typically mid-February",
+    deadline: "Nov 1, 2026 → Feb 1, 2027",
+    opensOn: "2026-11-01",
+    closesOn: "2027-02-01",
+    opensLabel: "Nov 1, 2026",
+    closesLabel: "Feb 1, 2027",
+    dateNote: "Scripps SURF window is Nov 1–Feb 1 annually",
     summary:
       "Biomedical research at a top independent research institute — strong chemistry/biology interface.",
     whyFit:
