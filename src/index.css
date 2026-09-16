@@ -1,23 +1,29 @@
 :root {
-  --bg: #121214;
-  --bg-elevated: #1a1a1d;
-  --ink: #f4f2ef;
-  --ink-soft: rgba(244, 242, 239, 0.72);
-  --muted: rgba(244, 242, 239, 0.48);
-  --line: rgba(255, 255, 255, 0.1);
-  --line-strong: rgba(255, 255, 255, 0.18);
-  --card: #f6f4f1;
-  --card-ink: #1a1a1d;
-  --card-soft: #5c5a57;
-  --card-muted: #8a8680;
-  --card-line: #e4e0da;
-  --card-surface: #ebe8e3;
-  --accent-warm: #ff8f6b;
-  --radius: 28px;
-  --radius-sm: 18px;
-  --shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
-  --font-display: "Instrument Serif", "Iowan Old Style", Georgia, serif;
-  --font-body: "Plus Jakarta Sans", "Avenir Next", "Segoe UI", sans-serif;
+  --bg: #0b0b10;
+  --bg-elevated: #12121a;
+  --ink: #f5f3ff;
+  --ink-soft: rgba(245, 243, 255, 0.72);
+  --muted: rgba(245, 243, 255, 0.48);
+  --line: rgba(167, 139, 250, 0.18);
+  --line-strong: rgba(167, 139, 250, 0.35);
+  --card: rgba(24, 24, 36, 0.72);
+  --card-solid: #181824;
+  --card-ink: #f5f3ff;
+  --card-soft: rgba(245, 243, 255, 0.7);
+  --card-muted: rgba(245, 243, 255, 0.45);
+  --card-line: rgba(255, 255, 255, 0.08);
+  --card-surface: rgba(255, 255, 255, 0.04);
+  --purple: #8b5cf6;
+  --purple-bright: #a78bfa;
+  --purple-deep: #6d28d9;
+  --accent-warm: #c4b5fd;
+  --green: #34d399;
+  --yellow: #fbbf24;
+  --radius: 20px;
+  --radius-sm: 14px;
+  --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  --font-display: "Syne", "Avenir Next", "Segoe UI", sans-serif;
+  --font-body: "Manrope", "Avenir Next", "Segoe UI", sans-serif;
 }
 
 *,
@@ -35,7 +41,12 @@ body {
   min-height: 100vh;
   font-family: var(--font-body);
   color: var(--ink);
-  background: var(--bg);
+  background:
+    radial-gradient(ellipse 70% 50% at 10% -10%, rgba(109, 40, 217, 0.45), transparent 55%),
+    radial-gradient(ellipse 55% 45% at 90% 5%, rgba(139, 92, 246, 0.28), transparent 50%),
+    radial-gradient(ellipse 50% 40% at 50% 100%, rgba(76, 29, 149, 0.22), transparent 55%),
+    var(--bg);
+  background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -56,38 +67,13 @@ button {
 }
 
 a {
-  color: inherit;
+  color: var(--purple-bright);
 }
 
-@keyframes rise {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+a:hover {
+  color: #ddd6fe;
 }
 
-@keyframes soft-float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
-}
-
-@keyframes wash {
-  0% {
-    background-position: 0% 40%;
-  }
-  50% {
-    background-position: 100% 60%;
-  }
-  100% {
-    background-position: 0% 40%;
-  }
+img {
+  max-width: 100%;
 }

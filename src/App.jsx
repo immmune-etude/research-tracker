@@ -170,7 +170,7 @@ export default function App() {
         <div className="hero-top">
           <div className="brand-mark">
             <span className="orb" aria-hidden />
-            Portal · Research
+            Internship OS
           </div>
           <div className="hero-actions">
             <button type="button" className="btn-ghost-light" onClick={exportData}>
@@ -193,18 +193,18 @@ export default function App() {
           </div>
         </div>
         <div className="hero-copy">
-          <p className="brand">Research Tracker</p>
-          <h1>Summer research applications for Eddy · UCLA MCDB</h1>
+          <p className="brand">Internship OS</p>
+          <h1>Bioengineering & research applications for Eddy · UCLA MCDB ’29</h1>
           <p className="lede">
-            Split by what’s open now vs what’s coming. {openNow.length} open ·{" "}
-            {notYetOpen.length} not yet open
+            Industry internships + research programs for <strong>Summer 2027</strong>.{" "}
+            {openNow.length} open now · {notYetOpen.length} not yet open
             {nextOpens ? (
               <>
                 {" "}
                 · Next up: <strong>{nextOpens.name}</strong> ({nextOpens.opensLabel})
               </>
             ) : null}
-            . Built for <strong>Summer 2027</strong>.
+            .
           </p>
         </div>
       </header>
