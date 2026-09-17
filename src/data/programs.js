@@ -100,7 +100,7 @@ export const PROGRAMS = [
     whyFit:
       "MCDB + engineering background from FIRST/robotics makes biology and BME REUs a natural match. Use the NSF directory to shortlist 5–8 sites.",
     requirements: "Usually US citizen/PR; site-specific GPA and coursework",
-    applyUrl: "https://www.nsf.gov/funding/initiatives/reu/search",
+    applyUrl: "https://etap.nsf.gov/search",
     tags: ["biology", "engineering", "stipend"],
     source: "list",
   },
@@ -370,7 +370,7 @@ export const PROGRAMS = [
       "Local option that doesn’t require relocating; builds cancer research alongside your cardiology base.",
     requirements: "GPA ≥3.0; full-time student; no concurrent summer courses; basic lab preferred",
     applyUrl:
-      "https://ucrtp.smapply.io/prog/cduucla_undergraduate_cancer_research_training_program_-_summer_2026/",
+      "https://www.cdrewu.edu/research/student-research/undergraduate-cancer-research-and-training-program/",
     tags: ["cancer", "LA", "UCLA"],
     source: "added",
   },
@@ -442,7 +442,7 @@ export const PROGRAMS = [
     whyFit:
       "Geographic convenience from LA; strong brand; competitive for students with proven research like yours.",
     requirements: "Check current SSRP/Amgen Stanford pages; generally strong academics + research interest",
-    applyUrl: "https://biosciences.stanford.edu/prospective-students/diversity-programs/ssrp-amgen/",
+    applyUrl: "https://biosciences.stanford.edu/pathways/ssrp-amgen-scholars-program/",
     tags: ["biomedical", "CA", "selective"],
     source: "added",
   },
@@ -466,7 +466,7 @@ export const PROGRAMS = [
     whyFit:
       "Local, rigorous option; robotics/engineering background helps for quantitative biology labs.",
     requirements: "US citizen/PR or DACA often preferred for funding; strong academics",
-    applyUrl: "https://www.sfp.caltech.edu/programs/wave_fellows",
+    applyUrl: "https://sfp.caltech.edu/undergraduate-research/programs/wavefellows",
     tags: ["CA", "STEM", "selective"],
     source: "added",
   },
@@ -490,7 +490,7 @@ export const PROGRAMS = [
     whyFit:
       "Southern California biomedical option with serious lab culture; good if you want industry-adjacent basic science.",
     requirements: "Check annual eligibility; typically undergrads with science coursework",
-    applyUrl: "https://education.scripps.edu/undergraduate/summer-internship/",
+    applyUrl: "https://education.scripps.edu/undergraduate/summer-research/surf-program/",
     tags: ["biomedical", "CA"],
     source: "added",
   },
@@ -791,7 +791,7 @@ export const PROGRAMS = [
     summary: "Summer internship at the leading DNA sequencing company.",
     whyFit: "Genomics / instruments — strong bioengineering-adjacent industry option.",
     requirements: "Enrolled student; role-specific majors",
-    applyUrl: "https://www.illumina.com/company/careers/student-programs.html",
+    applyUrl: "https://www.illumina.com/company/careers/interns.html",
     tags: ["genomics", "watch"],
     source: "industry",
   },
